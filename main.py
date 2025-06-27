@@ -9,11 +9,13 @@ import config
 from statistics import get_stat
 from telebot import types
 import base64
+from google import genai
 
-TOKEN = config.bot_token
+TOKEN = config.prod_bot_token
 bot = telebot.TeleBot(TOKEN)
 db = Database(config.database_path)
 CHAT_BY_DATETIME = dict()
+google_client = genai.Client(api_key=config.genai_api_key)
 
 def write_statistics(statistics_type, user_id):
     now = datetime.now().strftime("%d.%m.%y")
@@ -115,16 +117,28 @@ def llm_answer(message, chat_history, model_name):
         chat_history.append(content)
     else:
         model = model_name
-    try:
-        completion = client.chat.completions.create(
-            extra_headers={},
-            extra_body={},
-            model=model,
-            messages=chat_history
-        )
-        answer = completion.choices[0].message.content
-    except Exception as e:
-        print(e)
+    if model == "google/gemini-2.0-flash-001":
+        chat_messages = ", ".join(item["content"] for item in chat_history)
+        try:
+            response = google_client.models.generate_content(
+                model = "gemini-2.0-flash",
+                contents = [chat_messages]
+            )
+            answer = response.text
+        except Exception as e:
+            print(e)
+            answer = ""
+    else:
+        try:
+            completion = client.chat.completions.create(
+                extra_headers={},
+                extra_body={},
+                model=model,
+                messages=chat_history
+            )
+            answer = completion.choices[0].message.content
+        except Exception as e:
+            print(e)
         answer = ""
     return answer
 
