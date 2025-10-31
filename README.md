@@ -49,5 +49,3 @@ git clone https://github.com/sharipovai/calories_calc_bot.git
 cd calories_calc_bot
 mv config_example.py config.py (добавить ключи и параметры)
 pip install -r requirements.txt
-## 📁 Структура проекта
-
