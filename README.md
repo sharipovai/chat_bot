@@ -45,7 +45,7 @@ Telegram-бот на **Python** с интеграцией нескольких L
 ## 📦 Установка
 
 ```bash
-git clone https://github.com/sharipovai/calories_calc_bot.git
-cd calories_calc_bot
+git clone https://github.com/sharipovai/chat_bot.git
+cd chat_bot
 mv config_example.py config.py (добавить ключи и параметры)
 pip install -r requirements.txt
